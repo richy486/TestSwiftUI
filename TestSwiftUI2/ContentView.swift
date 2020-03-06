@@ -15,47 +15,66 @@ struct Restaurant: Identifiable {
 
 struct RestaurantRow: View {
   var restaurant: Restaurant
-  var num: Int
 
   var body: some View {
     VStack {
       GeometryReader { geo in
-        Rectangle()
-          .fill(LinearGradient(gradient: Gradient(colors: [.yellow, .red]),
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing))
-          .frame(width: 300, height: 200)
-          .clipShape(RoundedRectangle(cornerRadius: 20))
-          .rotation3DEffect(.degrees(-Double(geo.frame(in: .global).minX-120) / 8),
-                            axis: (x: 0, y: 1, z: 0))
+        ZStack {
+          Rectangle()
+            .fill(LinearGradient(gradient: Gradient(colors: [.yellow, .red]),
+                                 startPoint: .topLeading,
+                                 endPoint: .bottomTrailing))
+            .frame(width: 300, height: 200)
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .rotation3DEffect(.degrees(-Double(geo.frame(in: .global).minX-120) / 8),
+                              axis: (x: 0, y: 1, z: 0))
+          Text(self.restaurant.name)
+            .font(.largeTitle)
+            .foregroundColor(.white)
+        }
       }
     }
     .frame(width: 180)
   }
 }
-//
-//struct ContentView: View {
-//    var body: some View {
-//        let first = Restaurant(name: "Joe's Original")
-//        let restaurants = [first]
-//
-//        return NavigationView {
-//            List(restaurants) { restaurant in
-//                RestaurantRow(restaurant: restaurant)
-//            }.navigationBarTitle("Select a restaurant")
-//        }
-//    }
-//}
+
+struct RestaurantView: View {
+    var restaurant: Restaurant
+
+    var body: some View {
+        Text("Come and eat at \(restaurant.name)")
+            .font(.largeTitle)
+    }
+}
+
 
 struct ContentView: View {
   var body: some View {
-    ScrollView(.horizontal, showsIndicators: false) {
-      HStack(spacing: 90) {
-        ForEach(1..<10) { num in
-          RestaurantRow(restaurant: Restaurant(name: "Joe's Original"), num: num)
+    
+    let restaurants = [
+      Restaurant(name: "Joe's Original"),
+      Restaurant(name: "Pizza Man"),
+      Restaurant(name: "Sine's Veggie Stu"),
+      Restaurant(name: "Richy's pot"),
+      Restaurant(name: "Pizza Pizza Cake"),
+      Restaurant(name: "Cat Food"),
+      Restaurant(name: "Other Joe's Original"),
+      Restaurant(name: "Real Joe's Original"),
+      Restaurant(name: "Joe's Cousin's Original"),
+      Restaurant(name: "Joe's"),
+    ]
+    
+    return NavigationView {
+      ScrollView(.horizontal, showsIndicators: false) {
+        HStack(spacing: 90) {
+          ForEach(restaurants) { restaurant in
+            NavigationLink(destination: RestaurantView(restaurant: restaurant)) {
+              RestaurantRow(restaurant: restaurant)
+            }
+          }
         }
+        .padding(120)
       }
-      .padding(120)
     }
   }
 }
