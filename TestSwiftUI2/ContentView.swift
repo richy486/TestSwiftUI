@@ -47,29 +47,39 @@ struct RestaurantView: View {
     }
 }
 
+let restaurants = [
+  Restaurant(name: "Joe's Original"),
+  Restaurant(name: "Pizza Man"),
+  Restaurant(name: "Sine's Veggie Stu"),
+  Restaurant(name: "Richy's pot"),
+  Restaurant(name: "Pizza Pizza Cake"),
+  Restaurant(name: "Cat Food"),
+  Restaurant(name: "Other Joe's Original"),
+  Restaurant(name: "Real Joe's Original"),
+  Restaurant(name: "Joe's Cousin's Original"),
+  Restaurant(name: "Joe's"),
+]
 
 struct ContentView: View {
+  @State private var isPresented: [Bool] = Array(repeating: false, count: restaurants.count)
+  private var restaurantsCount: Int = restaurants.count
+  
   var body: some View {
-    
-    let restaurants = [
-      Restaurant(name: "Joe's Original"),
-      Restaurant(name: "Pizza Man"),
-      Restaurant(name: "Sine's Veggie Stu"),
-      Restaurant(name: "Richy's pot"),
-      Restaurant(name: "Pizza Pizza Cake"),
-      Restaurant(name: "Cat Food"),
-      Restaurant(name: "Other Joe's Original"),
-      Restaurant(name: "Real Joe's Original"),
-      Restaurant(name: "Joe's Cousin's Original"),
-      Restaurant(name: "Joe's"),
-    ]
-    
     return NavigationView {
       ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 90) {
-          ForEach(restaurants) { restaurant in
-            NavigationLink(destination: RestaurantView(restaurant: restaurant)) {
-              RestaurantRow(restaurant: restaurant)
+          ForEach(0..<restaurantsCount) { i in
+            NavigationLink(destination: RestaurantView(restaurant: restaurants[i])) {
+              VStack {
+                RestaurantRow(restaurant: restaurants[i])
+                Button(action: {
+                    self.isPresented[i].toggle()
+                }) {
+                    Text("Show Detail")
+                }.sheet(isPresented: self.$isPresented[i]) {
+                    RestaurantView(restaurant: restaurants[i])
+                }
+              }
             }
           }
         }
@@ -80,7 +90,7 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+  static var previews: some View {
+    ContentView()
+  }
 }
